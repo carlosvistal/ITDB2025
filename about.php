@@ -1,5 +1,6 @@
 <?php include('header.php'); ?>
 
+
 <main class="about-page">
     <section class="about-content">
         <h2>About Us</h2>
@@ -14,9 +15,10 @@
 
         <p>We believe in the power of showcasing your work online, and our system aims to make it as simple and effective as possible.</p>
     </section>
+    <?php include('footer.php'); ?>
 </main>
 
-<?php include('css/footer.php'); ?>
+
 
 <style>
     body {

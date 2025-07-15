@@ -5,19 +5,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $full_name = $_POST['full_name'];
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+    $gender = $_POST['gender'];
 
-    $sql = "INSERT INTO users (full_name, email, password) VALUES ('$full_name', '$email', '$password')";
+    //  Check if the email already exists
+    $check_query = "SELECT email FROM users WHERE email = ?";
+    $stmt = $conn->prepare($check_query);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
 
-    if ($conn->query($sql) === TRUE) {
-        header("Location: login.php");
+    if ($stmt->num_rows > 0) {
+        // Email exists, alert user
+        echo "<script>alert('Email already registered. Please use a different one.'); window.location='create_account.php';</script>";
     } else {
-        echo "Error: " . $conn->error;
+        //   Proceed with inserting the user
+        $insert_query = "INSERT INTO users (full_name, email, password, gender) VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($insert_query);
+        $stmt->bind_param("ssss", $full_name, $email, $password, $gender);
+       
+        
+
+        if ($stmt->execute()) {
+            echo "<script>alert('Account created successfully!'); window.location='login.php';</script>";
+        } else {
+            echo "Error: " . $stmt->error;
+        }
     }
+
+    $stmt->close();
+    $conn->close();
 }
-
-$conn->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,6 +105,13 @@ $conn->close();
             <input type="text" name="full_name" placeholder="Full Name" required class="input-field">
             <input type="email" name="email" placeholder="Email" required class="input-field">
             <input type="password" name="password" placeholder="Password" required class="input-field">
+            <label for="gender">Gender</label>
+            <select name="gender" id="gender" required class="input-field">
+                <option value="">--select--</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Others">Others</option>
+            </select>
             <button type="submit" class="btn">Sign Up</button>
         </form>
         <p>Already have an account? <a href="login.php">Log In</a></p>

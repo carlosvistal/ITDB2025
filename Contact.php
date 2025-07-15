@@ -1,6 +1,6 @@
 <?php
    
-      include("config.php");
+      include("header.php");
 
 // Define variables and set to empty
 $name = $email = $message = $success = $error = "";
@@ -25,8 +25,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $error = "Please fill in all fields correctly.";
     }
+    
 }
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -85,7 +88,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </body>
 </html>
-
+<footer class="footer">
+        <p>&copy; 2025 Portfolio System | All Rights Reserved</p>
+    </footer>
 
 
 

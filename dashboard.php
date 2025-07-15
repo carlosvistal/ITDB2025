@@ -170,7 +170,6 @@ $profile_picture = isset($user['profile_picture']) && !empty($user['profile_pict
             <nav class="nav">
                 <a href="home.php">Home</a>
                 <a href="about.php">About</a>
-                <a href="portfolio.php">Portfolio</a>
                 <a href="contact.php">Contact</a>
                 <a href="logout.php?logout=true">Logout</a>
             </nav>
@@ -205,24 +204,69 @@ $profile_picture = isset($user['profile_picture']) && !empty($user['profile_pict
         </section>
 
         <section class="my-portfolios">
-            <h3>My Portfolios</h3>
-            <div class="portfolio-list">
-                <?php if ($portfolios_result->num_rows > 0): ?>
-                    <?php while ($portfolio = $portfolios_result->fetch_assoc()): ?>
-                        <div class="portfolio-card">
-                            <h4><?= htmlspecialchars($portfolio['project_title']); ?></h4>
-                            <p><?= nl2br(htmlspecialchars($portfolio['project_description'])); ?></p>
-                        </div>
-                    <?php endwhile; ?>
-                <?php else: ?>
-                    <p>You haven't created any portfolios yet. <a href="create_portfolio.php">Create one now!</a></p>
-                <?php endif; ?>
-            </div>
-        </section>
-    </main>
+        
+    <h3>My Portfolios</h3>
+    <div class="portfolio-list">
+        <?php if ($portfolios_result->num_rows > 0): ?>
+            <?php while ($portfolio = $portfolios_result->fetch_assoc()): ?>
+                <div class="portfolio-card" style="position: relative;">
+    
+    <div class="dots-wrapper">
+        <button class="dots-button">⋮</button>
+        <div class="dropdown-content">
+            <a href="edit_portfolio.php?id=<?= $portfolio['id']; ?>">✏️ Edit</a>
+            <a href="delete_portfolio.php?id=<?= $portfolio['id']; ?>" onclick="return confirm('Delete this?')">🗑️ Delete</a>
+            <a href="download_portfolio.php?id=<?= $portfolio['id']; ?>">⬇️ Download</a>
+        </div>
+    </div>
+
+    <!-- Portfolio Content -->
+    <h4><?= htmlspecialchars($portfolio['project_title']); ?></h4>
+    <p><?= nl2br(htmlspecialchars($portfolio['project_description'])); ?></p>
+</div>
+
+            <?php endwhile; ?>
+        <?php else: ?>
+            <p>You haven't created any portfolios yet. <a href="create_portfolio.php">Create one now!</a></p>
+        <?php endif; ?>
+    </div>
+</section>
+
+
+
+
 
     <footer class="footer">
         <p>&copy; 2025 Portfolio System | All Rights Reserved</p>
     </footer>
 </body>
 </html>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Handle dots button click
+    document.querySelectorAll('.dots-button').forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.stopPropagation(); // Don’t close immediately
+            const dropdown = this.nextElementSibling;
+
+            // Close other dropdowns
+            document.querySelectorAll('.dropdown-content').forEach(menu => {
+                if (menu !== dropdown) {
+                    menu.style.display = 'none';
+                }
+            });
+
+            // Toggle this one
+            dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
+        });
+    });
+
+    // Close dropdowns on outside click
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.dropdown-content').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    });
+});
+</script>
+
